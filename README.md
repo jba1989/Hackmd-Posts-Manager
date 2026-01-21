@@ -1,92 +1,83 @@
 # HackMD Sync System
 
+[English](README.md) | [中文](README.zh-tw.md)
+
 **HackMD Sync System** is a robust local synchronization tool designed to bridge your local development environment with HackMD. It enables seamless bidirectional synchronization, allowing users to edit Markdown files with their preferred local editors while keeping content perfectly synced with HackMD.
 
-### Features
-- **Bidirectional Sync**: Effortlessly pull updates from HackMD or push local changes.
-- **Conflict Detection**: Built-in MD5 content comparison prevents accidental overwrites.
-- **Smart Frontmatter**: Automatically preserves official HackMD metadata while managing custom local fields.
-- **Efficient Tracking**: Skips unmodified files to minimize unnecessary API calls.
-- **Batch Support**: Handles single files or entire directories with ease.
+## Features
 
----
+- ✅ **Bidirectional Sync** - Support pulling from and pushing to HackMD.
+- ✅ **Conflict Detection** - MD5 content comparison to prevent accidental overwrites.
+- ✅ **Smart Frontmatter** - Preserves official HackMD metadata while automatically managing custom local fields.
+- ✅ **State Tracking** - Skips unmodified files to minimize unnecessary API calls.
+- ✅ **Batch Operations** - Supports single file or batch synchronization.
 
-完整的 HackMD 本地同步系統，支援雙向同步、衝突檢測、智慧 Frontmatter 處理。
+## Quick Start
 
-## 功能特色
-
-- ✅ **雙向同步** - 支援從 HackMD 拉取 (Pull) 和推送 (Push) 文章
-- ✅ **衝突檢測** - MD5 內容比對，防止意外覆蓋
-- ✅ **智慧 Frontmatter** - 保留 HackMD 官方欄位，自動管理自定義欄位
-- ✅ **狀態追蹤** - 避免重複上傳未修改的檔案，減少 API 使用次數
-- ✅ **批量操作** - 支援單檔或批量同步
-
-## 快速開始
-
-### 1. 安裝依賴
+### 1. Install Dependencies
 
 ```bash
 npm install -g @hackmd/hackmd-cli
 ```
 
-### 2. 配置 API Token
+### 2. Configure API Token
 
-在 [HackMD Settings](https://hackmd.io/settings#api) 建立 API token，然後創建 `.env` 檔案：
+Create an API token in [HackMD Settings](https://hackmd.io/settings#api), then create a `.env` file:
 
 ```bash
 HMD_API_ACCESS_TOKEN=your_token_here
 ```
 
-### 3. 基本使用
+### 3. Basic Usage
 
 ```bash
-# 匯出所有文章
+# Export all notes
 ./scripts/export.sh
 
-# 編輯文章
+# Edit a note
 vim posts/my-article.md
 
-# 推送更新
+# Push updates
 ./scripts/update.sh "my-article.md"
 
-# 批量同步所有修改
+# Batch sync all changes
 ./scripts/sync.sh
 ```
 
-## AI 智慧助手支援
+## AI Agent Support
 
-本專案包含一個專門的 Agent Skill (`hackmd-sync`)，讓您可以直接使用自然語言讓 AI 執行同步操作。
+This project includes a specialized Agent Skill (`hackmd-sync`), allowing you to use natural language to let AI perform synchronization operations.
 
-### 支援指令範例
+### Supported Command Examples
 
-您不需要記憶複雜的腳本指令，只需告訴 AI：
+You don't need to memorize complex script commands, just tell the AI:
 
-- **"匯出所有文章"** → AI 執行 `./scripts/export.sh`
-- **"匯出 article.md"** → AI 執行 `./scripts/export.sh "article.md"`
-- **"更新 article.md"** → AI 執行 `./scripts/update.sh "article.md"`
-- **"同步所有修改"** → AI 執行 `./scripts/sync.sh`
-- **"強制匯出"** → AI 執行 `./scripts/export.sh --force`
+- **"Export all notes"** → AI runs `./scripts/export.sh`
+- **"Export article.md"** → AI runs `./scripts/export.sh "article.md"`
+- **"Update article.md"** → AI runs `./scripts/update.sh "article.md"`
+- **"Sync all changes"** → AI runs `./scripts/sync.sh`
+- **"Force export"** → AI runs `./scripts/export.sh --force`
 
-AI 助手會自動解析您的意圖並調用相應的腳本，同時處理參數傳遞。
+The AI assistant will automatically parse your intent and call the corresponding scripts while handling parameter passing.
 
-## 系統架構
+## System Architecture
 
-### 檔案結構
+### File Structure
 
 ```
 .
-├── posts/                # 文章目錄
-│   ├── .sync_state      # 同步狀態追蹤
-│   ├── index.json       # 文章索引
-│   └── *.md             # Markdown 文章
+├── posts/                # Notes directory
+│   ├── .sync_state      # Sync state tracking
+│   ├── index.json       # Notes index
+│   └── *.md             # Markdown notes
 ├── scripts/
-│   ├── export.sh        # 匯出（Pull）
-│   ├── update.sh        # 單篇推送（Push）
-│   └── sync.sh          # 批量推送
+│   ├── export.sh        # Export (Pull)
+│   ├── update.sh        # Single push
+│   └── sync.sh          # Batch push
 └── .env                 # API Token
 ```
 
-### 工作流程
+### Workflow
 
 ```
         HackMD Cloud ☁️
@@ -98,215 +89,215 @@ export.sh           update.sh
     ↓                   ↑
     └─────────┬─────────┘
               ↓
-        本地檔案 📄
+        Local Files 📄
     (posts/*.md + .sync_state)
               ↑
           sync.sh
-        (批量 Push)
+        (Batch Push)
 ```
 
-## 核心功能
+## Core Features
 
-### 1. Export (Pull) - 從 HackMD 下載
+### 1. Export (Pull) - Download from HackMD
 
-#### 匯出所有文章
+#### Export all notes
 ```bash
 ./scripts/export.sh
 ```
 
-#### 匯出單篇文章（Pull 功能）
+#### Export a single note (Pull function)
 ```bash
 ./scripts/export.sh "article.md"
 ```
 
-**衝突檢測：**
-- 若本地檔案與遠端內容不同，會顯示警告並跳過
-- 使用 `--force` 強制覆蓋本地修改
+**Conflict Detection:**
+- If the local file differs from the remote content, a warning will be displayed and the file will be skipped.
+- Use `--force` to overwrite local changes.
 
 ```bash
 ./scripts/export.sh "article.md" --force
 ```
 
-#### 特性
-- ✅ MD5 內容比對
-- ✅ 保留 HackMD 原有 frontmatter
-- ✅ 添加自定義管理欄位
-- ✅ 生成文章索引檔
-- ✅ 處理特殊字元檔名（中文、空格、符號）
+#### Characteristics
+- ✅ MD5 content comparison
+- ✅ Retains original HackMD frontmatter
+- ✅ Adds custom management fields
+- ✅ Generates note index file
+- ✅ Handles special characters in filenames (Chinese, spaces, symbols)
 
-### 2. Update (Push) - 上傳至 HackMD
+### 2. Update (Push) - Upload to HackMD
 
 ```bash
 ./scripts/update.sh "article.md"
 ```
 
-#### 特性
-- ✅ 從 frontmatter 讀取 `hackmd_id`
-- ✅ 智慧過濾：保留官方欄位，移除自定義欄位
-- ✅ 自動更新 `.sync_state`
+#### Characteristics
+- ✅ Reads `hackmd_id` from frontmatter
+- ✅ Smart filtering: retains official fields, removes custom fields
+- ✅ Automatically updates `.sync_state`
 
-### 3. Sync (Batch Push) - 批量同步
+### 3. Sync (Batch Push) - Batch Synchronization
 
 ```bash
 ./scripts/sync.sh
 ```
 
-#### 特性
-- ✅ 自動掃描 `posts/` 目錄
-- ✅ 比對檔案修改與匯出的時間，只上傳有修改的檔案
-- ✅ 提供執行摘要（成功/失敗/跳過數量）
+#### Characteristics
+- ✅ Automatically scans `posts/` directory
+- ✅ Compares file modification time with export time, uploads only modified files
+- ✅ Provides execution summary (success/failure/skipped count)
 
-**強制同步所有檔案：**
+**Force sync all files:**
 ```bash
 ./scripts/sync.sh --force
 ```
 
-## Frontmatter 處理策略
+## Frontmatter Handling Strategy
 
-### 官方欄位（上傳時保留）
+### Official Fields (Retained on Upload)
 
-HackMD 原生支援的欄位會被保留：
-- `title` - 文章標題
-- `tags` - 標籤
-- `image` - 封面圖
-- `description` - 描述
-- `robots`, `lang`, `breaks`, `GA` 等
+Native HackMD fields are retained:
+- `title` - Note title
+- `tags` - Tags
+- `image` - Cover image
+- `description` - Description
+- `robots`, `lang`, `breaks`, `GA`, etc.
 
-### 自定義欄位（上傳時移除）
+### Custom Fields (Removed on Upload)
 
-僅用於本地管理：
-- `hackmd_id` - 文章 ID（用於更新）
-- `userPath` - 使用者路徑
+Used only for local management:
+- `hackmd_id` - Note ID (for updates)
+- `userPath` - User path
 
-### Frontmatter 範例
+### Frontmatter Example
 
 ```yaml
 ---
-# HackMD 官方欄位（上傳時保留）
+# HackMD Official Fields (Retained on Upload)
 title: My Article
 tags: tutorial, notes
 image: https://example.com/cover.jpg
 
-# 自定義欄位（上傳時移除）
+# Custom Fields (Removed on Upload)
 hackmd_id: abc123xyz
 userPath: username
 ---
 ```
 
-## 使用情境
+## Usage Scenarios
 
-### 情境 1：在 HackMD 編輯後同步到本地
+### Scenario 1: Sync to local after editing on HackMD
 
 ```bash
-# HackMD 網站編輯後，拉取最新版本
+# Pull latest version after editing on HackMD website
 ./scripts/export.sh "article.md"
 
-# 若本地也有修改 → 顯示衝突警告
-# 若本地未修改 → ✓ No changes detected
+# If local changes exist → Conflict warning
+# If no local changes → ✓ No changes detected
 ```
 
-### 情境 2：本地編輯後推送到 HackMD
+### Scenario 2: Push to HackMD after local editing
 
 ```bash
-# 本地編輯
+# Local edit
 vim "posts/article.md"
 
-# 單篇上傳
+# Single upload
 ./scripts/update.sh "article.md"
 
-# 或批量同步
+# Or batch sync
 ./scripts/sync.sh
 ```
 
-### 情境 3：雙方都修改（衝突處理）
+### Scenario 3: Both modified (Conflict Handling)
 
 ```bash
-# 嘗試 pull
+# Try to pull
 ./scripts/export.sh "article.md"
 # ⚠ Conflict detected!
 
-# 選項 1: 保留本地版本，推送到 HackMD
+# Option 1: Keep local version, push to HackMD
 ./scripts/update.sh "article.md"
 
-# 選項 2: 放棄本地修改，使用遠端版本
+# Option 2: Discard local changes, use remote version
 ./scripts/export.sh "article.md" --force
 ```
 
-## 核心機制
+## Core Mechanisms
 
-### 1. 雙重記錄架構
-- **JSON 索引** (`index.json`) - 提供整體視圖，方便批量操作
-- **YAML Frontmatter** - 每個檔案自包含 metadata，即使索引丟失也能恢復
+### 1. Dual Record Architecture
+- **JSON Index** (`index.json`) - Provides overall view, facilitates batch operations
+- **YAML Frontmatter** - Each file is self-contained with metadata, recoverable even if index is lost
 
-### 2. 同步狀態追蹤 (`.sync_state`)
-- 記錄每個檔案最後同步時間（Unix 時間戳）
-- 避免重複上傳未修改的檔案
-- 自動更新於 export、update、sync 操作後
+### 2. Sync State Tracking (`.sync_state`)
+- Records the last sync time (Unix timestamp) for each file
+- Prevents re-uploading unmodified files
+- Automatically updates after export, update, and sync operations
 
-### 3. 衝突檢測
-- MD5 比對本地與遠端內容
-- 只比較文章正文（排除 frontmatter）
-- 預防意外覆蓋，保護資料安全
+### 3. Conflict Detection
+- MD5 compares local and remote content
+- Compares only note body (excludes frontmatter)
+- Prevents accidental overwrites, protects data safety
 
-## 腳本功能總覽
+## Script Overview
 
-| 腳本 | 功能 | 衝突處理 | 狀態追蹤 |
-|------|------|----------|----------|
-| `export.sh` | 匯出（Pull） | ✅ MD5 檢測 | ✅ 更新 |
-| `update.sh` | 單篇上傳（Push） | ❌ 強制覆蓋 | ✅ 更新 |
-| `sync.sh` | 批量上傳（Push） | ⏱ 時間比對 | ✅ 更新 |
+| Script | Function | Conflict Handling | State Tracking |
+|--------|----------|------------------|----------------|
+| `export.sh` | Export (Pull) | ✅ MD5 Check | ✅ Update |
+| `update.sh` | Single Upload (Push) | ❌ Force Overwrite | ✅ Update |
+| `sync.sh` | Batch Upload (Push) | ⏱ Time Comparison | ✅ Update |
 
-## 系統優勢
+## System Advantages
 
-1. **安全性**
-   - 衝突檢測防止意外覆蓋
-   - 狀態追蹤避免資料遺失
+1. **Safety**
+   - Conflict detection prevents accidental overwrites
+   - State tracking prevents data loss
 
-2. **靈活性**
-   - 支援單檔或批量操作
-   - `--force` 參數提供強制覆蓋選項
+2. **Flexibility**
+   - Supports single file or batch operations
+   - `--force` parameter ensures forced overwrite option
 
-3. **相容性**
-   - 保留 HackMD 官方 metadata
-   - 充分利用平台特性
+3. **Compatibility**
+   - Retains HackMD official metadata
+   - Fully utilizes platform features
 
-4. **效率性**
-   - 只同步修改的檔案
-   - 減少不必要的 API 請求
+4. **Efficiency**
+   - Syncs only modified files
+   - Reduces unnecessary API requests
 
-## 常見問題
+## FAQ
 
-### Q: 如何初始化專案？
+### Q: How to initialize the project?
 
 ```bash
-# 1. 安裝 hackmd-cli
+# 1. Install hackmd-cli
 npm install -g @hackmd/hackmd-cli
 
-# 2. 設定 API token
+# 2. Set API token
 echo "HMD_API_ACCESS_TOKEN=your_token" > .env
 
-# 3. 匯出所有文章
+# 3. Export all notes
 ./scripts/export.sh
 ```
 
-### Q: 如何處理檔名有特殊字元的文章？
+### Q: How to handle notes with special characters in filenames?
 
-系統會自動處理特殊字元（中文、空格、符號），將不合法字元轉換為底線 `_`。
+The system automatically handles special characters (Chinese, spaces, symbols), converting illegal characters to underscores `_`.
 
-### Q: 如果 `.sync_state` 檔案遺失怎麼辦？
+### Q: What if the `.sync_state` file is lost?
 
-執行 `./scripts/export.sh` 會重新建立 `.sync_state`，所有檔案會被標記為當前時間同步。
+Running `./scripts/export.sh` will recreate `.sync_state`, marking all files as synced at the current time.
 
-### Q: 如何強制重新同步所有文章？
+### Q: How to force re-sync all notes?
 
 ```bash
 ./scripts/sync.sh --force
 ```
 
-## 授權
+## License
 
 MIT License
 
-## 貢獻
+## Contributing
 
-歡迎提交 Issue 和 Pull Request！
+Issues and Pull Requests are welcome!
