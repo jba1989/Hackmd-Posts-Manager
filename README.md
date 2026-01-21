@@ -1,5 +1,16 @@
 # HackMD Sync System
 
+**HackMD Sync System** is a robust local synchronization tool designed to bridge your local development environment with HackMD. It enables seamless bidirectional synchronization, allowing users to edit Markdown files with their preferred local editors while keeping content perfectly synced with HackMD.
+
+### Features
+- **Bidirectional Sync**: Effortlessly pull updates from HackMD or push local changes.
+- **Conflict Detection**: Built-in MD5 content comparison prevents accidental overwrites.
+- **Smart Frontmatter**: Automatically preserves official HackMD metadata while managing custom local fields.
+- **Efficient Tracking**: Skips unmodified files to minimize unnecessary API calls.
+- **Batch Support**: Handles single files or entire directories with ease.
+
+---
+
 完整的 HackMD 本地同步系統，支援雙向同步、衝突檢測、智慧 Frontmatter 處理。
 
 ## 功能特色
@@ -41,6 +52,22 @@ vim posts/my-article.md
 # 批量同步所有修改
 ./scripts/sync.sh
 ```
+
+## AI 智慧助手支援
+
+本專案包含一個專門的 Agent Skill (`hackmd-sync`)，讓您可以直接使用自然語言讓 AI 執行同步操作。
+
+### 支援指令範例
+
+您不需要記憶複雜的腳本指令，只需告訴 AI：
+
+- **"匯出所有文章"** → AI 執行 `./scripts/export.sh`
+- **"匯出 article.md"** → AI 執行 `./scripts/export.sh "article.md"`
+- **"更新 article.md"** → AI 執行 `./scripts/update.sh "article.md"`
+- **"同步所有修改"** → AI 執行 `./scripts/sync.sh`
+- **"強制匯出"** → AI 執行 `./scripts/export.sh --force`
+
+AI 助手會自動解析您的意圖並調用相應的腳本，同時處理參數傳遞。
 
 ## 系統架構
 
