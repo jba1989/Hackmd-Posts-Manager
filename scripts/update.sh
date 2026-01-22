@@ -65,7 +65,80 @@ OFFICIAL_FIELDS="title|tags|image|description|robots|lang|breaks|GA"
 # Custom fields to remove
 CUSTOM_FIELDS="hackmd_id|userPath"
 
-# Process the file
+# Add or update timestamp in the ORIGINAL file first
+TEMP_ORIGINAL_WITH_TIME=$(mktemp)
+
+# Use TZ if set in .env, otherwise use system timezone
+if [ -n "${TZ:-}" ]; then
+    CURRENT_TIMESTAMP=$(TZ="$TZ" date '+%Y-%m-%d %H:%M')
+else
+    CURRENT_TIMESTAMP=$(date '+%Y-%m-%d %H:%M')
+fi
+
+awk -v timestamp="$CURRENT_TIMESTAMP" '
+BEGIN {
+    in_frontmatter=0;
+    frontmatter_count=0;
+    found_h1=0;
+    processed_timestamp=0;
+}
+
+# Detect frontmatter boundaries
+/^---$/ {
+    frontmatter_count++;
+    if (frontmatter_count == 1) {
+        in_frontmatter=1;
+    } else if (frontmatter_count == 2) {
+        in_frontmatter=0;
+    }
+    print;
+    next;
+}
+
+# Inside frontmatter - just pass through
+in_frontmatter {
+    print;
+    next;
+}
+
+# When we find the first H1 title AFTER frontmatter
+/^# / && !in_frontmatter && frontmatter_count >= 2 && !found_h1 {
+    print;  # Print the H1 line
+    found_h1=1;
+    getline;  # Read next line
+
+    # Skip empty lines after H1
+    while ($0 ~ /^[[:space:]]*$/) {
+        print;
+        getline;
+    }
+
+    # Now check if current line is a timestamp
+    if ($0 ~ /^\[文章更新時間:/) {
+        # Replace with new timestamp
+        print "[文章更新時間: " timestamp "]";
+        processed_timestamp=1;
+    } else {
+        # Insert new timestamp and print the line we just read
+        print "[文章更新時間: " timestamp "]";
+        print "";
+        print;
+        processed_timestamp=1;
+    }
+    next;
+}
+
+# All other lines pass through
+{
+    print;
+}
+' "$FILEPATH" > "$TEMP_ORIGINAL_WITH_TIME"
+
+# Write timestamped version back to original file
+cp "$TEMP_ORIGINAL_WITH_TIME" "$FILEPATH"
+rm "$TEMP_ORIGINAL_WITH_TIME"
+
+# Now process the updated file for upload (strip custom fields)
 TEMP_FILE=$(mktemp)
 
 # Extract and filter frontmatter, then append body
@@ -154,4 +227,3 @@ else
     echo -e "  ${YELLOW}Content saved to: $TEMP_FILE${NC}"
     exit 1
 fi
-
